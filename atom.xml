@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://alfredwang0412.github.io</id>
     <title>Alfred Wang</title>
-    <updated>2019-10-28T05:25:15.992Z</updated>
+    <updated>2019-10-28T05:49:13.164Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://alfredwang0412.github.io"/>
     <link rel="self" href="https://alfredwang0412.github.io/atom.xml"/>
@@ -16,8 +16,6 @@
         <link href="https://alfredwang0412.github.io/post/wen-jian-guan-li-fang-fa">
         </link>
         <updated>2019-10-27T17:03:02.000Z</updated>
-        <content type="html"><![CDATA[<p>hello</p>
-]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Using CLion to Make an Embedded System Project]]></title>
@@ -25,156 +23,5 @@
         <link href="https://alfredwang0412.github.io/post/ct2-Xu7ly">
         </link>
         <updated>2019-10-27T16:34:36.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="why-switching-mdk-to-clion">Why switching MDK to CLion</h1>
-<p>First, I want to utilize my most advanced computer, a MacBook Pro. Second, CLion is more convenient and programmer-friendly than MDK. Third, I can use CPP other than C to program embedded systems.</p>
-<h2 id="hardware-and-os-details">Hardware and OS Details</h2>
-<blockquote>
-<p>Hardware: MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)<br>
-OS: MacOS Catalina 10.15<br>
-STLink Debugger/Downloader</p>
-</blockquote>
-<h1 id="installation">Installation</h1>
-<h2 id="stm32cubemx">STM32CubeMX</h2>
-<p>STM32CubeMX is an app which can generate well-organized templates for STM32Fxxx chips.</p>
-<p>After <a href="https://www.st.com/en/development-tools/stm32cubemx.html#get-software">downloaded the zip file</a> (version 5.4.0), unzip it and find the correct Java version from the included  <code>Readme.html</code>:</p>
-<blockquote>
-<p>The Java Run Time Environment 1.8_45 64-bit must be installed.<br>
-Limited validation is done with Java™ 11.<br>
-Java™ 7, Java™ 9 and Java™ 10 are not supported.</p>
-</blockquote>
-<p>Download and install Java™ 11 from <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">Oracle</a>. After successfully installed, switch to terminal to verify.</p>
-<pre><code class="language-bash">java -version
-# java version &quot;11.0.5&quot; 2019-10-15 LTS
-# Java(TM) SE Runtime Environment 18.9 (build 11.0.5+10-LTS)
-# Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.5+10-LTS, mixed mode)
-</code></pre>
-<p>After met Java prerequisite, install STM32CubeMX. Open terminal and switch to the unzipped file's current location.</p>
-<pre><code class="language-bash">ls # verify
-# Readme.html
-# SetupSTM32CubeMX-5.4.0.app
-# SetupSTM32CubeMX-5.4.0.exe
-# SetupSTM32CubeMX-5.4.0.linux
-sudo java -jar SetupSTM32CubeMX-5.4.0.exe # install
-</code></pre>
-<p>You can find <code>STM32CubeMX</code> in <code>/Applications/STMicroelectronics/</code> .</p>
-<h2 id="stlink">STLink</h2>
-<p>Use <code>brew</code> to install <a href="https://github.com/texane/stlink">STLink</a> and its dependencies.</p>
-<pre><code class="language-bash">brew install stlink
-st-info --version # verify
-# v1.5.1
-</code></pre>
-<p>Then, configure whether this computer can detect peripheral STLink device. Click <code>apple -&gt; About This Mac -&gt; System Report -&gt; USB</code>. If <code>STM32 STLink</code> can be found under <code>USB 3.0 Bus</code>, this computer can recognize STLink hardware. Or:</p>
-<pre><code class="language-bash">st-info --probe
-# Found 1 stlink programmers
-#  serial: 523f70067267555226100967
-# openocd: &quot;\x52\x3f\x70\x06\x72\x67\x55\x52\x26\x10\x09\x67&quot;
-#   flash: 0 (pagesize: 0)
-#    sram: 0
-#  chipid: 0x0000
-#   descr: unknown device
-</code></pre>
-<h2 id="gcc-arm-none-eabi">gcc-arm-none-eabi</h2>
-<p><code>brew cask install gcc-arm-embedded</code> malfunctioned. Download <code>gcc-arm-none-eabi-8-2019q3-update-mac.tar.bz2</code>  in <a href="https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads">developer.arm.com</a>. Use <code>Archive Utility.app</code> to unzip the file.</p>
-<pre><code class="language-bash">sudo mkdir /usr/local/gcc_arm
-sudo mv ~/Downloads/gcc-arm-none-eabi-8-2019-q3-update /usr/local/gcc_arm/
-cd /usr/local/gcc_arm/gcc-arm-none-eabi-8-2019-q3-update/bin/
-ls
-# arm-none-eabi-addr2line        arm-none-eabi-elfedit         blabla...
-export PATH=&quot;$PATH:/usr/local/gcc_arm/gcc-arm-none-eabi-8-2019-q3-update/bin/&quot;
-arm-none-eabi-gcc --version # verify
-# go to System Preference &gt; Security &amp; Privacy and click &quot;open anyway&quot;. Then: 
-
-# arm-none-eabi-gcc (GNU Tools for Arm Embedded Processors 8-2019-q3-update) 8.3.1 20190703 (release) [gcc-8-branch revision 273027]
-# Copyright (C) 2018 Free Software Foundation, Inc.
-# This is free software; see the source for copying conditions.  There is NO
-# warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-</code></pre>
-<p><code>$PATH</code> is needed to be written into <code>~/.zshrc</code> . Or, CLion will not recognize the path.</p>
-<pre><code class="language-bash">vim ~/.zshrc
-# add the following two lines and quit vim
-PATH=&quot;$PATH:/usr/local/gcc_arm/gcc-arm-none-eabi-8-2019-q3-update/bin/&quot;
-export PATH
-</code></pre>
-<p>To verify, exit Vim and:</p>
-<pre><code class="language-bash">source ~/.zshrc
-which arm-none-eabi-gcc # verify
-# /usr/local/gcc_arm/gcc-arm-none-eabi-8-2019-q3-update/bin//arm-none-eabi-gcc
-</code></pre>
-<h2 id="clion">CLion</h2>
-<p>Just download it from the official website and search for the specific version's activation code.</p>
-<p>OpenOCD (open on-chip debugger) is embedded in CLion, and is used to download the <code>.hex</code> file to the hardware.</p>
-<h1 id="teststm32cubemxignitingled">Test.STM32CubeMX.IgnitingLED</h1>
-<p>Open <code>STM32CubeMX</code>, select <code>Access to MCU Selector</code>. My board is not supported by <code>STM32CubeMX</code>. The MCU on my board is STM32F407ZGT6 (Cortex M4, LQFP144). Then click <code>Start Project</code>.</p>
-<h2 id="creating-template">Creating template</h2>
-<p>This is the tree structure of the newly-generated and complied project.</p>
-<pre><code>.
-├── Drivers
-│   ├── CMSIS
-│   │   ├── Device
-│   │   │   └── ST
-│   │   │       └── STM32F4xx
-│   │   │           ├── Include
-│   │   │           └── Source
-│   │   │               └── Templates
-│   │   └── Include
-│   └── STM32F4xx_HAL_Driver
-│       ├── Inc
-│       │   └── Legacy
-│       └── Src
-├── Inc
-├── Src
-├── cmake-build-debug
-│   └── CMakeFiles
-│       ├── 3.15.3
-│       │   ├── CompilerIdASM
-│       │   ├── CompilerIdC
-│       │   │   └── tmp
-│       │   └── CompilerIdCXX
-│       │       └── tmp
-│       ├── CMakeTmp
-│       └── LEDTest.elf.dir
-│           ├── Drivers
-│           │   └── STM32F4xx_HAL_Driver
-│           │       └── Src
-│           ├── Src
-│           └── startup
-└── startup
-</code></pre>
-<h2 id="add-additional-hardware-drivers">Add additional hardware drivers</h2>
-<p>I put files driving LED to a new directory <code>./Hardware</code>. After that, <code>CMakeLists.txt</code> should be re-generated by re-clicking <code>Tools-&gt;CMake-&gt;Update CMake Project with STM32CubeMX</code>. After that, build  <code>$PROJECT$.elf</code> by pressing <code>cmd</code> + <code>F9</code>.</p>
-<h1 id="testnoneignitingled">Test.None.IgnitingLED</h1>
-<p>Not using STM32CubeMX. Build the whole program from scratch.</p>
-<h2 id="hardware-details">Hardware details</h2>
-<p>LED-DS0: <code>GPIOF, GPIO_PIN_9</code>; LED_DS1: <code>GPIOF, GPIO_PIN_10</code>.</p>
-<p>HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);<br>
-HAL_Delay(500);</p>
-<h2 id="generating-template-code">Generating template code</h2>
-<p>First, choose STM32F407ZGTx (Cortex M4, LQFP144), and click <code>Start Project</code>.</p>
-<p>Then:</p>
-<ol>
-<li>Pinpoint Configuration:  set both <code>PF9</code> and <code>PF10</code> as <code>GPIO_Output</code>.</li>
-<li>Project Manager:
-<ol>
-<li>In Project, modify Project Name: LEDTest and Toolchain/IDE: SW4STM32;</li>
-<li>In Code Generator, tick Generate peripheral initialization as a pair of '.c/.h' files per peripheral.</li>
-</ol>
-</li>
-<li>Click <code>GENERATE CODE</code>.</li>
-</ol>
-<h2 id="clion-configuration">CLion configuration</h2>
-<p>Choose <code>New CMake Project from Sources</code> then open <code>LEDTest.ioc</code>. Click <code>Open Existing Project</code>.</p>
-<p>Choose <code>stm32discovery.cfg</code> as Config Files. It can be modified.</p>
-<p>Edit <code>main.c</code>. Add the following lines between <code>/* USER CODE BEGIN WHILE */</code> and <code>/* USER CODE END WHILE */</code>:</p>
-<pre><code class="language-c">HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
-HAL_Delay(500);
-HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_10);
-HAL_Delay(500);
-</code></pre>
-<p>Then, click <code>Build</code> icon (a green hammer). The build process complete by displaying <code>[100%] Built target LEDTest.elf</code>.</p>
-<p>Connect STLink cable. Make sure that the drive of STLink is up-to-date.</p>
-<p>Then, configure the board pinpoint connection. Pull the BOOT0 <code>B0</code> up. Then, open the board.</p>
-<p>Switch to <code>OCD LEDTest | Debug</code>, then click <code>CTRL+R</code>. The download and debug process complete by displaying <code>** Programming Finished **</code>.</p>
-<p>Then, close the board and pull the BOOT0 <code>B0</code> down. You can see the result.</p>
-]]></content>
     </entry>
 </feed>
